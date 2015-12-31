@@ -1,0 +1,60 @@
+{
+  "intents": [
+    {
+      "intent": "OnDeckIntent",
+      "slots": []
+    },
+    {
+      "intent": "YesIntent",
+      "slots": []
+    },
+    {
+      "intent": "NoIntent",
+      "slots": []
+    },
+    {
+      "intent": "StartShowIntent",
+      "slots": [
+        {
+          "name": "showName",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "StartRandomShowIntent",
+      "slots": [
+        {
+          "name": "showName",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "StartHighRatedEpisodeIntent",
+      "slots": [
+        {
+          "name": "showName",
+          "type": "LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "StartSpecificEpisodeIntent",
+      "slots": [
+        {
+          "name": "showName",
+          "type": "LITERAL"
+        },
+        {
+          "name": "episodeNumber",
+          "type": "NUMBER"
+        },
+        {
+          "name": "seasonNumber",
+          "type": "NUMBER"
+        }
+      ]
+    }
+  ]
+}

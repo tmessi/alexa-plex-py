@@ -1,0 +1,14 @@
+OnDeckIntent what's on deck
+OnDeckIntent what's new
+OnDeckIntent what is on deck
+OnDeckIntent what is new
+YesIntent yes
+YesIntent yeah
+YesIntent okay
+NoIntent no
+StartShowIntent start {firefly|showName}
+StartShowIntent start {arrested development|showName}
+StartShowIntent play show {firefly|showName}
+StartShowIntent play movie {firefly|showName}
+StartShowIntent start show {firefly|showName}
+StartShowIntent start movie {firefly|showName}

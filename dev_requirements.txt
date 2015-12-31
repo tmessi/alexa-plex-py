@@ -1,0 +1,2 @@
+pip-tools==1.4.2
+pylint==1.5.2
