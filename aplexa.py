@@ -16,8 +16,11 @@ from alexa import Response
 dotenv.read_dotenv()
 
 logger = logging.getLogger(__name__)
+
+APP_ID = 'amzn1.echo-sdk-ams.app.{}'.format(env('ALEXA_APP_ID'))
 PLEX_USER = MyPlexUser.signin(env('PMS_USERNAME'), env('PMS_PASSWORD'))
-PLEX = PLEX_USER.getResource(env('PMS_SERVERNAME')).connect()
+PLEX_SERVER = PLEX_USER.getResource(env('PMS_SERVERNAME')).connect()
+PLEX_CLIENT = PLEX_SERVER.client(env('PMS_CLIENT'))
 
 
 def get_welcome_response():
@@ -50,10 +53,8 @@ def start_movie(intent, session):
                 session['sessionId'])
     if 'showName' in intent['slots']:
         show = intent['slots']['showName']['value']
-        movie = PLEX.library.section('Movies').get(show)
-        print(PLEX.clients())
-        client = PLEX.client(env('PMS_CLIENT'))
-        client.playMedia(movie)
+        movie = PLEX_SERVER.library.section('Movies').get(show)
+        PLEX_CLIENT.playMedia(movie)
         speech_output = 'Started movie ' + show
     else:
         speech_output = 'No show specified'
@@ -90,6 +91,12 @@ def on_session_ended(request, session):
                 session['sessionId'])
 
 
+INTENT_ROUTING = {
+    'OnDeckIntent': get_on_deck,
+    'StartShowIntent': start_movie,
+}
+
+
 def on_intent(request, session):
     '''
     Called when the user specifies an intent for this skill
@@ -100,12 +107,17 @@ def on_intent(request, session):
     intent = request['intent']
     intent_name = request['intent']['name']
 
-    if intent_name == "OnDeckIntent":
-        return get_on_deck(intent, session)
-    elif intent_name == "StartShowIntent":
-        return start_movie(intent, session)
-    else:
+    try:
+        return INTENT_ROUTING[intent_name](intent, session)
+    except KeyError:
         raise ValueError("Invalid intent")
+
+
+REQUEST_ROUTING = {
+    'LaunchRequest': on_launch,
+    'IntentRequest': on_intent,
+    'SessionEndedRequest': on_session_ended,
+}
 
 
 def lambda_handler(event, context):  # pylint: disable=unused-argument
@@ -118,16 +130,15 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
     event_app_id = event['session']['application']['applicationId']
     logger.info('event.session.application.applicationId=%s', event_app_id)
 
-    if event_app_id != 'amzn1.echo-sdk-ams.app.{}'.format(env('ALEXA_APP_IP')):
+    if event_app_id != APP_ID:
         raise ValueError("Invalid Application ID")
 
     if event['session']['new']:
         on_session_started({'requestId': event['request']['requestId']},
                            event['session'])
 
-    if event['request']['type'] == "LaunchRequest":
-        return on_launch(event['request'], event['session'])
-    elif event['request']['type'] == "IntentRequest":
-        return on_intent(event['request'], event['session'])
-    elif event['request']['type'] == "SessionEndedRequest":
-        return on_session_ended(event['request'], event['session'])
+    try:
+        request_type = event['request']['type']
+        return REQUEST_ROUTING[request_type](event['request'], event['session'])
+    except KeyError:
+        return None
