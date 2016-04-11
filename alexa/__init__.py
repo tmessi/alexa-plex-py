@@ -35,8 +35,8 @@ class Response(object):
                 },
                 'card': {
                     'type': 'Simple',
-                    'title': 'SessionSpeechlet - ' + self.title,
-                    'content': 'SessionSpeechlet - ' + self.output
+                    'title': 'Plex - ' + self.title,
+                    'content': 'Plex - ' + self.output
                 },
                 'reprompt': {
                     'outputSpeech': {

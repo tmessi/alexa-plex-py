@@ -58,7 +58,7 @@ def start_movie(intent, session):
         speech_output = 'Started movie ' + show
     else:
         speech_output = 'No show specified'
-    return Response(speech_output, intent['name']).to_dict()
+    return Response(speech_output, 'Start Movie').to_dict()
 
 
 def on_session_started(request, session):
