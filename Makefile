@@ -1,5 +1,5 @@
 VE_DIR ?= .build/env
-LAMBDA_FUNC_NAME ?= aplexa-plex-py
+LAMBDA_FUNC_NAME ?= alexa-plex-py
 
 all: aplexa.zip
 
